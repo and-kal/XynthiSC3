@@ -83,14 +83,14 @@ SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 			}).view
 		]);
 		ActionButton(v, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var dict;
 				dict=self.getValues;
 				dict.writeTextArchive(path);
 			})
 		});
 		ActionButton(v, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})

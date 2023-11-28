@@ -189,14 +189,14 @@ SynthDef(\vco_ssync, {|out=0, freq=440, tune=1, fm_in=37, fm=0, amp=1|
 			)
 		});
 		ActionButton(v, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var dict;
 				dict=self.getValues;
 				dict.writeTextArchive(path);
 			})
 		});
 		ActionButton(v, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})

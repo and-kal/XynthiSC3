@@ -95,14 +95,14 @@ SynthDef(\tone_out, {|out=0, in=38, tone=0.5, pan=0, amp=1|
 			}).view
 		]);
 		ActionButton(v, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var dict;
 				dict=self.getValues;
 				dict.writeTextArchive(path);
 			})
 		});
 		ActionButton(v, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})

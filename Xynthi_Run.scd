@@ -1,5 +1,5 @@
 /*
-Xynthi 
+Xynthi
 Copyright (c) 2006 Bhob Rainey. All rights reserved.
 http://www.bhobrainey.net
 
@@ -18,27 +18,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA    02111-1307    USA
 */
 
-// inspired by the ems synthi series... not a model... 
+// inspired by the ems synthi series... not a model...
 // reverb is a port of sean costello's scverb from csound
+
 
 (
 Routine({
 	var msg, tmpmsg, unpackMsg, tmparr, audioMods, groups, revInBus, revOutBus, delInBus, mix1OutBus, mix2OutBus, matrix, freqInstr, vco1, vco2, vco3, in1, in2, noise1, env1, env2, ringer, dist, moogVcf, mixer1, mixer2, del, scverb, lfo1, lfo2, lfo3, modpod, index, prename, theMods, quickPre, revSr, muteSynth, noteOn, noteOff, noteOnFunc, noteOffFunc, bend, bendRange=2, heldNotes, keyMode=0;
-	
+
 	"Loading Modules".postln;
 	"SynthEvents.rtf".loadPaths;
 	"modules/*.rtf".loadPaths;
-	
+
 	SynthDef(\soft_mute_2, {|in=0, gate=1|
 		var env, input;
 		input=In.ar(in, 2);
 		env=EnvGen.ar(Env.new([1.0, 0.0, 1.0], [0.02, 0.02], releaseNode:1), gate, doneAction:2);
 		ReplaceOut.ar(in, env * input);
 	}).send(s);
-	
+
 	// wait for the defs to load
 	s.sync;
-	
+
 	"Initializing Synths".postln;
 	msg=List.new;
 	tmpmsg=List.new;
@@ -84,7 +85,7 @@ Routine({
 	// node order
 	matrix.nodeOrder=[matrix.inputArr.copy, matrix.outputArr.copy].lace(matrix.outputArr.size + matrix.inputArr.size );
 	// free audio busses on cmd-period
-	CmdPeriod.doOnce({ 
+	CmdPeriod.doOnce({
 		~xynthis=nil;
 		matrix.inputArr.do({|e|
 			s.audioBusAllocator.free(e);
@@ -136,7 +137,7 @@ Routine({
 	tmparr=env1.theSynth.env.asArray;
 	tmpmsg=tmpmsg.add([\n_setn, env1.theSynth.synthObj.nodeID, tmparr.size] ++ tmparr);
 	// env1.theSynth.setArgArray(\env, env1.theSynth.env.asArray);
-	
+
 	// ringer
 	ringer=~ringerInstr.reproduce;
 	ringer.theSynth.target=groups.at(\ringer);
@@ -162,9 +163,9 @@ Routine({
 	mixer2.theSynth.target=groups.at(\mixer2);
 	mixer2.theSynth.run=true;
 	tmpmsg=tmpmsg.add(mixer2.theSynth.playSynthMsg([\in, matrix.inputArr[11], \out, matrix.outputArr[12]]));
-	
+
 	// get ready for the space echo
-	
+
 	// delay
 	del=~tdelayInstr.reproduce;
 	del.theSynth.target=groups.at(\del);
@@ -280,11 +281,11 @@ Routine({
 		matrix: matrix,
 		modpod: modpod
 	);
-	
+
 	// just hold on a sec, okay!
-	
+
 	s.sync;
-	
+
 	// do the gui
 	quickPre=Array.newClear(20);
 	// make the window
@@ -292,7 +293,7 @@ Routine({
 	{
 		~synthWin=MultiPageLayout("Xynthi");
 		ActionButton(~synthWin, " Save ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var state;
 				state=Dictionary.new;
 				~xynthi.modDict.keysValuesDo({|key, value|
@@ -302,7 +303,7 @@ Routine({
 			});
 		});
 		ActionButton(~synthWin, " Load ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				var state, name;
 				state=Object.readTextArchive(path[0]);
 				state.keysValuesDo({|key, value|
@@ -311,7 +312,7 @@ Routine({
 				name=path[0].split;
 				prename.string_(' ' ++ name[name.size - 1]);
 			});
-		});	
+		});
 		12.do({|i|
 			Button(~synthWin, 18@16)
 				.states_([[(i + 1).asString]])
@@ -339,7 +340,7 @@ Routine({
 			.states_([["Batch"]])
 			.action_({
 				var win, pres, size;
-				SelectButtonSet(win=MultiPageLayout.new("Select group:"), 
+				SelectButtonSet(win=MultiPageLayout.new("Select group:"),
 					["Main", "Matrix", "ModPod"],
 					{|in|
 						switch (in)
@@ -347,7 +348,7 @@ Routine({
 						{ 1 } { pres=~xynthi.matrix.quickPre; size=8 }
 						{ 2 } { pres=~xynthi.modpod.quickPre; size=23 };
 						win.close;
-						CocoaDialog.getPaths({|paths|
+						Dialog.getPaths({|paths|
 							paths=paths.copyRange(0, size);
 							paths.do({|e, c|
 								pres.put(c, Object.readTextArchive(e));
@@ -356,7 +357,7 @@ Routine({
 					},
 					nil,
 					nil,
-					70, 
+					70,
 					20
 				);
 				win.resizeToFit;
@@ -400,7 +401,7 @@ Routine({
 					});
 				}).play
 			});
-		~synthWin.startRow;	
+		~synthWin.startRow;
 		~leftWin=FlowView(~synthWin, 245@470);
 		~xynthi.vco1.theGui.displayGui(~leftWin);
 		~leftWin.startRow;
@@ -433,15 +434,15 @@ Routine({
 		~xynthi.lfo2.theGui.displayGui(~synthWin);
 		~xynthi.lfo3.theGui.displayGui(~synthWin);
 		~synthWin.startRow;
-		~xynthi.modpod.gui(~synthWin);	
+		~xynthi.modpod.gui(~synthWin);
 		~synthWin.startRow;
-		
+
 		// cc's
 		ActionButton(~synthWin, "Init CC Controllers", {
 			"Xynthi_cc.rtf".loadPaths;
 			// "CC Initialized".postln;
 		});
-		
+
 		// keyboard stuff
 		heldNotes=List.new;
 		noteOnFunc={|src, chan, note, vel|
@@ -449,7 +450,7 @@ Routine({
 			~xynthi.env1.theSynth.setArgs(\gate, 1);
 			~xynthi.env2.theSynth.setArgs(\gate, 1);
 			heldNotes.add(note);
-			{ 
+			{
 				~xynthi.env1.theGui.elementDictionary.at(\gate).value_(1);
 				~xynthi.env2.theGui.elementDictionary.at(\gate).value_(1);
 			}.defer;
@@ -459,7 +460,7 @@ Routine({
 			(heldNotes.size < 1).if({
 				~xynthi.env1.theSynth.setArgs(\gate, 0);
 				~xynthi.env2.theSynth.setArgs(\gate, 0);
-				{ 
+				{
 					~xynthi.env1.theGui.elementDictionary.at(\gate).value_(0);
 					~xynthi.env2.theGui.elementDictionary.at(\gate).value_(0);
 				}.defer;
@@ -502,10 +503,10 @@ Routine({
 				~xynthi.vco1.theSynth.masterFreq.setArgs(\lag, v.value);
 			});
 		// key actions
-		theMods=[~xynthi.rev, ~xynthi.del, ~xynthi.vco1, ~xynthi.vco2, 
-			~xynthi.vco3, ~xynthi.in1, ~xynthi.in2, ~xynthi.noise1, 
+		theMods=[~xynthi.rev, ~xynthi.del, ~xynthi.vco1, ~xynthi.vco2,
+			~xynthi.vco3, ~xynthi.in1, ~xynthi.in2, ~xynthi.noise1,
 			~xynthi.vcf, ~xynthi.mix1, ~xynthi.mix2
-		]; 
+		];
 		Button(~synthWin, 160@18)
 			.states_([["Turn Key Actions On"], ["Turn Key Actions Off"]])
 			.action_({|v|

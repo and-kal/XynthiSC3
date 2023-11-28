@@ -201,14 +201,14 @@ SynthDef(\td_11, {|out=0, in=32, delay=0.2, time=10, hpf=330, lpf=8200, w_rate=0
 			);
 		});
 		ActionButton(v, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var dict;
 				dict=self.getValues;
 				dict.writeTextArchive(path);
 			})
 		});
 		ActionButton(v, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})

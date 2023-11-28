@@ -166,14 +166,14 @@ SynthDef(\scverb_11, {|out=0, in=22, mix=0.2, time=5, lpf=8200, srate=0|
 			);
 		});
 		ActionButton(v, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var dict;
 				dict=self.getValues;
 				dict.writeTextArchive(path);
 			})
 		});
 		ActionButton(v, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})

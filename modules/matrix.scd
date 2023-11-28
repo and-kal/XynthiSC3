@@ -83,14 +83,14 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 		}, (14 * inSize + 5)@(16 * outSize + 65));
 		w.startRow;
 		ActionButton(w, " S ", {
-			CocoaDialog.savePanel({|path|
+			Dialog.savePanel({|path|
 				var arr;
 				arr=self.getValues;
 				arr.writeTextArchive(path);
 			})
 		});
 		ActionButton(w, " L ", {
-			CocoaDialog.getPaths({|path|
+			Dialog.getPaths({|path|
 				self.setValues(Object.readTextArchive(path[0]));
 			})
 		});	

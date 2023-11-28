@@ -169,14 +169,14 @@ SynthDef(\ctrl_env, {|ctrl_out=32, timescale=1, mul=2, add= -1, gate=1|
 		);
 	});
 	ActionButton(w, " S ", {
-		CocoaDialog.savePanel({|path|
+		Dialog.savePanel({|path|
 			var dict;
 			dict=self.getValues;
 			dict.writeTextArchive(path);
 		})
 	});
 	ActionButton(w, " L ", {
-		CocoaDialog.getPaths({|path|
+		Dialog.getPaths({|path|
 			self.valueDictionary=Object.readTextArchive(path[0]);
 			self.setValues;
 		})
