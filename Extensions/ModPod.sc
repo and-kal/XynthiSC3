@@ -5,25 +5,25 @@ ModPod {
 	var view, <routeSynth, <mixSynth, isBypassed, isVia, hasGui=false;
 	var recIndex, modIndex, <stateSet, <>quickPre;
 	var activeIndexes;
-	
-	*initClass {
-		SynthDef.writeOnce("mpRouter", {|in_mod=17, mod_out=16, scale=0.0, min= -1.0, max=1.0|
-			Out.kr(mod_out, In.kr(in_mod) * scale.range(min, max))
-		}, dir: String.scDir ++ "/synthdefs/");
 
-		SynthDef.writeOnce("mpMixerring", {|value=1, in=17, out=16|
+	*initClass {
+		SynthDef("mpRouter", {|in_mod=17, mod_out=16, scale=0.0, min= -1.0, max=1.0|
+			Out.kr(mod_out, In.kr(in_mod) * scale.range(min, max))
+		}).store;
+
+		SynthDef("mpMixerring", {|value=1, in=17, out=16|
 			Out.kr(out, value.ring1(In.kr(in)))
-		}, dir: String.scDir ++ "/synthdefs/");
-		
-		SynthDef.writeOnce("mpMixeradd", {|value=1, in=17, out=16|
+		}).store;
+
+		SynthDef("mpMixeradd", {|value=1, in=17, out=16|
 			Out.kr(out, value + In.kr(in))
-		}, dir: String.scDir ++ "/synthdefs/");
+		}).store;
 	}
-	
+
 	*new {|numpods, receivers, modulators|
 		^super.new.init(numpods, receivers, modulators)
 	}
-	
+
 	init {|num, receivers, modulators|
 		var recBundle, recMaps, routeBundle;
 		numpods=num;
@@ -55,7 +55,7 @@ ModPod {
 		receivers.do({|each, count|
 			var modtype, specfunc;
 			prebus.put(count, Bus.control(Server.default, 1));
-			outbus.put(count, Bus.control(Server.default, 1)); 
+			outbus.put(count, Bus.control(Server.default, 1));
 			recNames.put(count, each[0]);
 			recArgs.put(count, each[1]);
 			recTargets.put(count, each[2]);
@@ -64,7 +64,7 @@ ModPod {
 			specfunc=each[5] ? {|v| var val; val=\pan.asSpec.map(v); val.squared * val.sign; };
 			sliderSpec.put(count, specfunc);
 			mixSynth.put(count, Synth.basicNew(\mpMixer ++ modtype));
-			recBundle.put(count, mixSynth.at(count).newMsg(nil, 
+			recBundle.put(count, mixSynth.at(count).newMsg(nil,
 				[\in, prebus[count].index, \out, outbus[count].index])
 			);
 			recMaps.put(count, [14, mixSynth.at(count).nodeID, \value, recBusses[count]]);
@@ -86,7 +86,7 @@ ModPod {
 		// activeIndexes=List.new;
 		CmdPeriod.doOnce({ outbus.do({|each, count| Server.default.audioBusAllocator.free(each.index); Server.default.audioBusAllocator.free(prebus[count].index) }) });
 	}
-	
+
 	checkModulated {|index|
 			var isModulated=false;
 			stateSet.do({|each, count|
@@ -98,31 +98,31 @@ ModPod {
 			});
 			^isModulated;
 	}
-	
+
 	bypass {|pod|
 		(stateSet[pod][0].not).if({
 			stateSet[pod][0]=true;
 			group[pod].run(false);
 			(this.checkModulated(pod).not).if({
-				recTargets[recIndex[pod]].map(recArgs[recIndex[pod]], 
+				recTargets[recIndex[pod]].map(recArgs[recIndex[pod]],
 					recBusses[recIndex[pod]]);
 			});
 			(hasGui).if({ { bypassButt[pod].value_(1) }.defer });
 		});
 	}
-	
+
 	unbypass {|pod|
 		(stateSet[pod][0]).if({
 			stateSet[pod][0]=false;
 				((stateSet[pod][1] > 0) && (stateSet[pod][3] > 0)).if({
 					group[pod].run(true);
-					recTargets[recIndex[pod]].map(recArgs[recIndex[pod]], 
+					recTargets[recIndex[pod]].map(recArgs[recIndex[pod]],
 						outbus[recIndex[pod]].index);
 				});
 			(hasGui).if({ { bypassButt[pod].value_(0) }.defer });
 		});
 	}
-	
+
 	setReceiver {|pod, val|
 		var index, podState;
 		stateSet[pod][1]=val;
@@ -130,7 +130,7 @@ ModPod {
 		(val==0).if({
 			group[pod].run(false);
 			(this.checkModulated(pod).not).if({
-				recTargets[recIndex[pod]].map(recArgs[recIndex[pod]], 
+				recTargets[recIndex[pod]].map(recArgs[recIndex[pod]],
 					recBusses[recIndex[pod]]);
 			});
 		}, {
@@ -144,7 +144,7 @@ ModPod {
 		});
 		(hasGui).if({ { recMenu[pod].value_(val) }.defer });
 	}
-	
+
 	setVia {|pod, val|
 		var index, podState;
 		stateSet[pod][2]=val;
@@ -176,7 +176,7 @@ ModPod {
 			group[pod].map(\scale, modBusses[index]);
 		});
 	}
-	
+
 	setModulator {|pod, val|
 		var index, podState;
 		stateSet[pod][3]=val;
@@ -184,7 +184,7 @@ ModPod {
 		(val==0).if({
 			group[pod].run(false);
 			(this.checkModulated(pod).not).if({
-				recTargets[modIndex[pod]].map(recArgs[modIndex[pod]], 
+				recTargets[modIndex[pod]].map(recArgs[modIndex[pod]],
 					recBusses[modIndex[pod]]);
 			});
 		}, {
@@ -199,7 +199,7 @@ ModPod {
 		});
 		(hasGui).if({ { modMenu[pod].value_(val) }.defer });
 	}
-	
+
 	setScale {|pod, val|
 		var podState, unmapped, minval, maxval;
 		(isVia[pod].not).if({
@@ -213,7 +213,7 @@ ModPod {
 					maxval=sliderSpec[recIndex[pod]].value(1);
 					unmapped=val - minval * (maxval - minval).reciprocal;
 					*/
-					unmapped=val.abs.sqrt * val.sign + 1 * 0.5; 
+					unmapped=val.abs.sqrt * val.sign + 1 * 0.5;
 					modSlider[pod].value_(unmapped);
 					viaSlider[pod].lo_(unmapped);
 					viaSlider[pod].hi_(unmapped);
@@ -221,7 +221,7 @@ ModPod {
 			});
 		});
 	}
-	
+
 	setRange {|pod, lo, hi|
 		var podState, unmap, lo_unmap, hi_unmap, minval, maxval;
 		(isVia[pod]).if({
@@ -247,27 +247,27 @@ ModPod {
 			});
 		});
 	}
-	
+
 	bypassMsg {|pod|
 		var msg;
 		msg=Array.new;
 		stateSet[pod][0]=true;
 		msg=msg.add(group[pod].runMsg(false));
 		(this.checkModulated(pod).not).if({
-			msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]], 
+			msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]],
 				recBusses[recIndex[pod]]));
 		});
 		(hasGui).if({ { bypassButt[pod].value_(1) }.defer });
 		^msg;
 	}
-	
+
 	unbypassMsg {|pod|
 		var msg;
 		stateSet[pod][0]=false;
 		((stateSet[pod][1] > 0) && (stateSet[pod][3] > 0)).if({
 			msg=Array.new;
 			msg=msg.add(group[pod].runMsg(true));
-			msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]], 
+			msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]],
 				outbus[recIndex[pod]].index));
 		}, {
 			msg=nil;
@@ -275,7 +275,7 @@ ModPod {
 		(hasGui).if({ { bypassButt[pod].value_(0) }.defer });
 		^msg;
 	}
-	
+
 	setReceiverMsg {|pod, val|
 		var index, podState, msg;
 		stateSet[pod][1]=val;
@@ -284,7 +284,7 @@ ModPod {
 		(val==0).if({
 			msg=msg.add(group[pod].runMsg(false));
 			(this.checkModulated(pod).not).if({
-				msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]], 
+				msg=msg.add(recTargets[recIndex[pod]].mapMsg(recArgs[recIndex[pod]],
 					recBusses[recIndex[pod]]));
 			});
 		}, {
@@ -299,7 +299,7 @@ ModPod {
 		(hasGui).if({ { recMenu[pod].value_(val) }.defer });
 		^msg;
 	}
-	
+
 	setViaMsg {|pod, val|
 		var index, podState, msg;
 		stateSet[pod][2]=val;
@@ -333,7 +333,7 @@ ModPod {
 		});
 		^msg;
 	}
-	
+
 	setModulatorMsg {|pod, val|
 		var index, podState, msg;
 		stateSet[pod][3]=val;
@@ -342,7 +342,7 @@ ModPod {
 		(val==0).if({
 			msg=msg.add(group[pod].runMsg(false));
 			(this.checkModulated(pod).not).if({
-				msg=msg.add(recTargets[modIndex[pod]].mapMsg(recArgs[modIndex[pod]], 
+				msg=msg.add(recTargets[modIndex[pod]].mapMsg(recArgs[modIndex[pod]],
 					recBusses[modIndex[pod]]));
 			});
 		}, {
@@ -358,7 +358,7 @@ ModPod {
 		(hasGui).if({ { modMenu[pod].value_(val) }.defer });
 		^msg;
 	}
-	
+
 	setScaleMsg {|pod, val|
 		var podState, unmapped, minval, maxval, msg;
 		(isVia[pod].not).if({
@@ -382,7 +382,7 @@ ModPod {
 		});
 		^nil;
 	}
-	
+
 	setRangeMsg {|pod, lo, hi|
 		var podState, unmap, lo_unmap, hi_unmap, minval, maxval, msg;
 		(isVia[pod]).if({
@@ -410,11 +410,11 @@ ModPod {
 		});
 		^nil;
 	}
-	
+
 	gui {|parent, perRow=8|
 		var podIncr=0, newview=false, prename;
 		hasGui=true;
-		(parent.isNil).if({ 
+		(parent.isNil).if({
 			view=MultiPageLayout.new("Mod Pod");
 			newview=true;
 		}, {
@@ -426,7 +426,7 @@ ModPod {
 			view.vert({|v|
 					v.flow({|h|
 					bypassButt[i]=SCButton(h, 60@17)
-						.states_([["Bypass", Color.white, Color.black], 
+						.states_([["Bypass", Color.white, Color.black],
 							["Bypass", Color.black, Color.white]])
 						.action_({|v|
 							(v.value==1).if({ this.bypass(i); }, { this.unbypass(i); });
@@ -434,10 +434,10 @@ ModPod {
 					(stateSet[i][0]).if({ bypassButt[i].value_(1) });
 					SCButton(h, 18@16)
 						.states_([["0"], ["0"]])
-						.action_({ 
-							modSlider[i].valueAction_(0.5); 
-							viaSlider[i].activeLo_(0.5); 
-							viaSlider[i].activeHi_(0.5) 
+						.action_({
+							modSlider[i].valueAction_(0.5);
+							viaSlider[i].activeLo_(0.5);
+							viaSlider[i].activeHi_(0.5)
 						});
 					}, 84@18);
 				recMenu[i]=SCPopUpMenu(v, 80@17)
@@ -454,11 +454,11 @@ ModPod {
 					.value_(stateSet[i][3]);
 			}, 86@82);
 			composite=SCCompositeView(view, 15@86);
-			viaSlider[i]=SCRangeSlider(composite, 
+			viaSlider[i]=SCRangeSlider(composite,
 				Rect(composite.bounds.left, composite.bounds.top, 10, 85))
 				.action_({|v|
 					var min, max;
-					min=sliderSpec[recIndex[i]].value(v.lo); 
+					min=sliderSpec[recIndex[i]].value(v.lo);
 					max=sliderSpec[recIndex[i]].value(v.hi);
 					stateSet[i][4]=max;
 					stateSet[i][5]=min;
@@ -466,7 +466,7 @@ ModPod {
 					group[i].set(\min, min, \max, max);
 				})
 				.visible_(false);
-			modSlider[i]=SCSlider(composite, 
+			modSlider[i]=SCSlider(composite,
 				Rect(composite.bounds.left, composite.bounds.top, 10, 85))
 				.action_({|v|
 					var val;
@@ -493,7 +493,7 @@ ModPod {
 			CocoaDialog.getPaths({|path|
 				this.setValues(Object.readTextArchive(path[0]));
 			})
-		});	
+		});
 		(min(numpods * 3, 24)).do({|i|
 			SCButton(view, 18@16)
 				.states_([[(i + 1).asString]])
@@ -515,13 +515,13 @@ ModPod {
 		view.onClose_({ hasGui=false });
 		(newview).if({ view.resizeToFit; view.front; });
 	}
-	
-	getValues { 
+
+	getValues {
 		var state;
 		state=stateSet.deepCopy;
 		^state;
 	}
-	
+
 	setValues {|list|
 		var msg, unpackMsg, tmpmsg;
 		msg=List.new;
