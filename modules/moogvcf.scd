@@ -57,11 +57,11 @@ SynthDef(\moog_vcf_2, {|in=21, out=0, freq=440, tune=1, q=0.75, fm_in=37, fm=0, 
 	w.vert({|v|
 		(self.showIO).if({
 			self.elementDictionary.put(\in,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\in, v.value) })
 			);
 			self.elementDictionary.put(\fm_in,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\fm_in, v.value) })
 			);
 		});
@@ -203,7 +203,7 @@ SynthDef(\moog_vcf_2, {|in=21, out=0, freq=440, tune=1, q=0.75, fm_in=37, fm=0, 
 		]);
 		(self.showIO).if({
 			self.elementDictionary.put(\out,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			);
 		});

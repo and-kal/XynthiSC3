@@ -58,7 +58,7 @@ SynthDef(\ctrl_env, {|ctrl_out=32, timescale=1, mul=2, add= -1, gate=1|
 			self.resetenv;
 		}).view,
 		\loop ->
-		SCNumberBox(w, 20@18)
+		NumberBox(w, 20@18)
 			.action_({|v|
 				(self.elementDictionary.at(\mode).value==1).if({
 					self.synthObj.env.loopNode=v.value;
@@ -67,7 +67,7 @@ SynthDef(\ctrl_env, {|ctrl_out=32, timescale=1, mul=2, add= -1, gate=1|
 				});
 			}),
 		\release ->
-		SCNumberBox(w, 20@18)
+		NumberBox(w, 20@18)
 			.action_({|v|
 				var val;
 				val=min(v.value, self.synthObj.env.levels.size);
@@ -156,15 +156,15 @@ SynthDef(\ctrl_env, {|ctrl_out=32, timescale=1, mul=2, add= -1, gate=1|
 	]);
 	(self.showIO).if({
 		self.elementDictionary.put(\k_out,
-			SCNumberBox(w, self.elementStyle.smallBoxSize)
+			NumberBox(w, self.elementStyle.smallBoxSize)
 				.canFocus_(false);
 		);
 		self.elementDictionary.put(\out,
-			SCNumberBox(v, self.elementStyle.smallBoxSize)
+			NumberBox(v, self.elementStyle.smallBoxSize)
 				.action_({|v| self.synthObj.setArgs(\out, v.value) })
 		);
 		self.elementDictionary.put(\in,
-			SCNumberBox(v, self.elementStyle.smallBoxSize)
+			NumberBox(v, self.elementStyle.smallBoxSize)
 				.action_({|v| self.synthObj.setArgs(\in, v.value) })
 		);
 	});

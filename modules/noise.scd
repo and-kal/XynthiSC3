@@ -85,7 +85,7 @@ SynthDef(\noise_clip, {|out=0, amp=1|
 		]);
 		(self.showIO).if({
 			self.elementDictionary.put(\out,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			)
 		});

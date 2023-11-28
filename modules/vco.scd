@@ -184,7 +184,7 @@ SynthDef(\vco_ssync, {|out=0, freq=440, tune=1, fm_in=37, fm=0, amp=1|
 		]);
 		(self.showIO).if({
 			self.elementDictionary.put(\out,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			)
 		});
@@ -206,7 +206,7 @@ SynthDef(\vco_ssync, {|out=0, freq=440, tune=1, fm_in=37, fm=0, amp=1|
 	(self.showIO).if({
 		self.elementDictionary.put(
 			\fm_in,
-			SCNumberBox(w, self.elementStyle.smallBoxSize)
+			NumberBox(w, self.elementStyle.smallBoxSize)
 				.action_({|v| self.synthObj.setArgs(\fm_in, v.value) })
 		)
 	});

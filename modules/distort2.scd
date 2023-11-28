@@ -57,13 +57,13 @@ SynthDef(\excess, {|out=0, in=38, mod_in=39, depth=1|
 		w.vert({|v|
 			self.elementDictionary.putAll(Dictionary[
 				\in ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\in, v.value) }),
 				\mod_in ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\mod_in, v.value) }),
 				\out ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			]);
 		}, 44@82);

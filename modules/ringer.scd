@@ -61,13 +61,13 @@ SynthDef(\ring_ring4, {|out=0, in=38, ring_in=39, depth=1|
 		w.vert({|v|
 			self.elementDictionary.putAll(Dictionary[
 				\in ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\in, v.value) }),
 				\ring_in ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\ring_in, v.value) }),
 				\out ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			]);
 		}, 44@82);

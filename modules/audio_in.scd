@@ -32,13 +32,13 @@ SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 ~audioInGui.makeGui={|self, w|
 	self.elementDictionary=Dictionary[
 		\in ->
-		SCNumberBox(w, self.elementStyle.smallBoxSize)
+		NumberBox(w, self.elementStyle.smallBoxSize)
 			.action_({|v| self.synthObj.setArgs(\in, v.value) })
 	];
 	(self.showIO).if({
 		self.elementDictionary.put(
 			\out,
-			SCNumberBox(w, self.elementStyle.smallBoxSize)
+			NumberBox(w, self.elementStyle.smallBoxSize)
 				.action_({|v| self.synthObj.setArgs(\out, v.value) })
 		);
 	});

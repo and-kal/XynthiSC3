@@ -98,7 +98,7 @@ SynthDef(\scverb_11, {|out=0, in=22, mix=0.2, time=5, lpf=8200, srate=0|
 	(self.showIO).if({
 		self.elementDictionary.put(
 			\in,
-			SCNumberBox(w, self.elementStyle.smallBoxSize)
+			NumberBox(w, self.elementStyle.smallBoxSize)
 			.action_({|v| self.synthObj.setArgs(\in, v.value) })
 		);
 	});
@@ -161,7 +161,7 @@ SynthDef(\scverb_11, {|out=0, in=22, mix=0.2, time=5, lpf=8200, srate=0|
 		(self.showIO).if({
 			self.elementDictionary.put(
 				\out,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			);
 		});

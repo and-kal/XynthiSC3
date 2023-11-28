@@ -75,7 +75,7 @@ SynthDef(\td_11, {|out=0, in=32, delay=0.2, time=10, hpf=330, lpf=8200, w_rate=0
 	(self.showIO).if({
 		self.elementDictionary.put(
 			\in,
-			SCNumberBox(w, self.elementStyle.smallBoxSize)
+			NumberBox(w, self.elementStyle.smallBoxSize)
 			.action_({|v| self.synthObj.setArgs(\in, v.value) })
 		);
 	});
@@ -196,7 +196,7 @@ SynthDef(\td_11, {|out=0, in=32, delay=0.2, time=10, hpf=330, lpf=8200, w_rate=0
 		(self.showIO).if({
 			self.elementDictionary.put(
 				\out,
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			);
 		});

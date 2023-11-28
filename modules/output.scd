@@ -36,10 +36,10 @@ SynthDef(\tone_out, {|out=0, in=38, tone=0.5, pan=0, amp=1|
 		w.vert({|v|
 			self.elementDictionary.putAll(Dictionary[
 				\in ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\in, v.value) }),
 				\out ->
-				SCNumberBox(v, self.elementStyle.smallBoxSize)
+				NumberBox(v, self.elementStyle.smallBoxSize)
 					.action_({|v| self.synthObj.setArgs(\out, v.value) })
 			]);
 		}, 30@40);
