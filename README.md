@@ -4,6 +4,10 @@ Project of trying to update Bhob Rainey's Xynthi to SC3.
 
 original version and additional information can be found at [https://mockfuneral.github.io/2020/12/11/xynthi](mockfuneral.github.io)
 
+## Install dependencies
+
+- Quarks.install("cruciallib")
+
 ## Roadmap
 
 Roadmap is in the making, but I haven't yet gotten around getting an overview of this repo.
