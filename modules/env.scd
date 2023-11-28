@@ -126,7 +126,7 @@ SynthDef(\ctrl_env, {|ctrl_out=32, timescale=1, mul=2, add= -1, gate=1|
 	w.startRow;
 	self.elementDictionary.put(
 		\env,
-		SCEnvEditor(w, 255@84, self.synthObj.env, 10)
+		EnvEditor(w, 255@84, self.synthObj.env, 10)
 			.onMouseUp({|env|
 				(env != self.synthObj.env).if({
 					self.synthObj.stopSynth;

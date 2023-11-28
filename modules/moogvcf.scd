@@ -124,7 +124,7 @@ SynthDef(\moog_vcf_2, {|in=21, out=0, freq=440, tune=1, q=0.75, fm_in=37, fm=0, 
 	}, 20@82);
 	(self.linkIncDec).if({
 		resSpec=[0.0078, 0.0005, -1].asSpec;
-		SCSlider(w, 10@80)
+		Slider(w, 10@80)
 			.action_({|v|
 				try {
 					self.midiObj.responderObj.updateResolution(

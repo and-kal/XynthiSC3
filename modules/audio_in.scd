@@ -5,7 +5,7 @@
 
 SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 	var input, amplitude;
-	input=AudioIn.ar(in);
+  input=SoundIn.ar(in);
 	amplitude=Amplitude.kr(input);
 	amp=amp * Lag.kr(amplitude > gate, 0.02);
 	Out.ar(out, input * amp)
@@ -70,15 +70,15 @@ SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 	w.vert({|v|
 		self.elementDictionary.putAll(Dictionary[
 			\play ->
-			ToggleButton(v, " P ", { 
+			ToggleButton(v, " P ", {
 				self.synthObj.playSynth;
-			}, { 
+			}, {
 				self.synthObj.stopSynth;
 			}).view,
 			\mute ->
 			ToggleButton(v, " M ", {
-				self.synthObj.runSynth(false); 
-			}, { 
+				self.synthObj.runSynth(false);
+			}, {
 				self.synthObj.runSynth(true);
 			}).view
 		]);
@@ -94,15 +94,15 @@ SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 				self.valueDictionary=Object.readTextArchive(path[0]);
 				self.setValues;
 			})
-		});	
+		});
 	}, 20@100);
 };
 ~audioInGui.valueDictionary=Dictionary[
-	\in-> 1, 
+	\in-> 1,
 	\out -> 0,
 	\gate -> 0.001,
 	\amp -> 1,
-	\mute -> 1, 
+	\mute -> 1,
 	\play -> 1
 ];
 
@@ -115,17 +115,17 @@ SynthDef(\audio_in, {|out=0, in=1, gate=0.001, amp=1|
 	self.responderObj=IncDecResponderBank(
 		self.src,
 		self.chan,
-		self.ccDictionary.at(\gate), 0.0078, \amp, 
-			{|s, c, n, v| 
-				self.synthObj.setArgs(\gate, v); 
-				self.updateGui(\gate, v, \valueNoAction_); 
-			}, 
+		self.ccDictionary.at(\gate), 0.0078, \amp,
+			{|s, c, n, v|
+				self.synthObj.setArgs(\gate, v);
+				self.updateGui(\gate, v, \valueNoAction_);
+			},
 			self.valueDictionary.at(\gate),
-		self.ccDictionary.at(\amp), 0.0078, \amp, 
-			{|s, c, n, v| 
-				self.synthObj.setArgs(\amp, v); 
-				self.updateGui(\amp, v, \valueNoAction_); 
-			}, 
+		self.ccDictionary.at(\amp), 0.0078, \amp,
+			{|s, c, n, v|
+				self.synthObj.setArgs(\amp, v);
+				self.updateGui(\amp, v, \valueNoAction_);
+			},
 			self.valueDictionary.at(\amp)
 	);
 	self.responderObj;

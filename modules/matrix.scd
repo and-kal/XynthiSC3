@@ -48,7 +48,7 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 					StaticText(x, 10@60).string_(vertName).align_(\center);
 				});
 			}, (14 * inSize + 5)@60);
-			boxView=SCCompositeView(v, (inSize * 14)@(outSize    * 16));
+			boxView=CompositeView(v, (inSize * 14)@(outSize    * 16));
 			boxAct={|l|
 				var v, x, y;
 				x=l[0];
