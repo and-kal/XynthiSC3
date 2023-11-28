@@ -27,8 +27,8 @@ Routine({
 	var msg, tmpmsg, unpackMsg, tmparr, audioMods, groups, revInBus, revOutBus, delInBus, mix1OutBus, mix2OutBus, matrix, freqInstr, vco1, vco2, vco3, in1, in2, noise1, env1, env2, ringer, dist, moogVcf, mixer1, mixer2, del, scverb, lfo1, lfo2, lfo3, modpod, index, prename, theMods, quickPre, revSr, muteSynth, noteOn, noteOff, noteOnFunc, noteOffFunc, bend, bendRange=2, heldNotes, keyMode=0;
 
 	"Loading Modules".postln;
-	"SynthEvents.rtf".loadPaths;
-	"modules/*.rtf".loadPaths;
+	"SynthEvents.scd".loadRelative;
+	"modules/*.scd".loadRelative;
 
 	SynthDef(\soft_mute_2, {|in=0, gate=1|
 		var env, input;
