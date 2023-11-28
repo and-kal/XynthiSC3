@@ -289,7 +289,7 @@ SynthDef(\vco_ssync, {|out=0, freq=440, tune=1, fm_in=37, fm=0, amp=1|
 		}
 		]
 	);
-	freqRange=SCStaticText(w, 28@18).string_(\Full);
+	freqRange=StaticText(w, 28@18).string_(\Full);
 	ActionButton(w, " L ", {
 		self.elementDictionary.at(\setRange).value(0);
 	});

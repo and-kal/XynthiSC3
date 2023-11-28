@@ -28,9 +28,9 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 		self.synthArr=Array.fill2D(outSize, inSize);
 		self.boxState=Array.fill2D(outSize, inSize, 0);
 		w.vert({|v|
-			SCStaticText(v, 40@65).string_("");
+			StaticText(v, 40@65).string_("");
 			self.outputArr.do({|e, c|
-				SCStaticText(v, 40@12).string_(self.outputNames.at(c)).align_(\right);
+				StaticText(v, 40@12).string_(self.outputNames.at(c)).align_(\right);
 			});
 		}, 40@(18 * outSize));
 		w.vert({|v|
@@ -45,7 +45,7 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 							vertName=vertName ++ l;
 						});
 					});
-					SCStaticText(x, 10@60).string_(vertName).align_(\center);
+					StaticText(x, 10@60).string_(vertName).align_(\center);
 				});
 			}, (14 * inSize + 5)@60);
 			boxView=SCCompositeView(v, (inSize * 14)@(outSize    * 16));
@@ -95,7 +95,7 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 			})
 		});	
 		self.numQuicks.do({|i|
-			SCButton(w, 18@16)
+			Button(w, 18@16)
 				.states_([[(i + 1).asString]])
 				.mouseDownAction_({|v, x, y, mod|
 					var state;
@@ -111,7 +111,7 @@ SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
 					});
 				});
 		});
-		prename=SCStaticText(w,18@16).string_('');
+		prename=StaticText(w,18@16).string_('');
 	},
 	getValues: {|self|
 		var outState;

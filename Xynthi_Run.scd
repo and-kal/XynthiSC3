@@ -313,7 +313,7 @@ Routine({
 			});
 		});	
 		12.do({|i|
-			SCButton(~synthWin, 18@16)
+			Button(~synthWin, 18@16)
 				.states_([[(i + 1).asString]])
 				.mouseDownAction_({|v, x, y, mod|
 					var state;
@@ -334,8 +334,8 @@ Routine({
 					});
 				});
 		});
-		prename=SCStaticText(~synthWin, 80@18).string_("Default");
-		SCButton(~synthWin, 70@18)
+		prename=StaticText(~synthWin, 80@18).string_("Default");
+		Button(~synthWin, 70@18)
 			.states_([["Batch"]])
 			.action_({
 				var win, pres, size;
@@ -362,7 +362,7 @@ Routine({
 				win.resizeToFit;
 				win.front;
 			});
-		SCButton(~synthWin, 75@18)
+		Button(~synthWin, 75@18)
 			.states_([["prepare rec"], ["start rec", Color.white, Color.black],
 				["recording", Color.white, Color.red], ["stopped"]])
 			.action_({|v|
@@ -371,7 +371,7 @@ Routine({
 					{ 2 } { s.record }
 					{ 3 } { s.stopRecording; v.value_(0) };
 			});
-		SCButton(~synthWin, 70@18)
+		Button(~synthWin, 70@18)
 			.states_([["mute"], ["unmute"]])
 			.action_({|v|
 				(v.value==1).if({
@@ -385,7 +385,7 @@ Routine({
 					muteSynth.release;
 				});
 			});
-		SCButton(~synthWin, 70@18)
+		Button(~synthWin, 70@18)
 			.states_([[" Reboot "]])
 			.action_({
 				~synthWin.close;
@@ -467,7 +467,7 @@ Routine({
 				~xynthi.vco1.theSynth.masterFreq.setArgs(\freq_in, heldNotes.last.midicps);
 			});
 		};
-		SCButton(~synthWin, 130@18)
+		Button(~synthWin, 130@18)
 			.states_([["Turn Keyboard On"], ["Turn Keyboard Off"]])
 			.action_({|v|
 				(v.value==0).if({
@@ -484,7 +484,7 @@ Routine({
 					});
 				});
 			});
-		SCStaticText(~synthWin, 80@18).string_("Bend Range: ").align_(\right);
+		StaticText(~synthWin, 80@18).string_("Bend Range: ").align_(\right);
 		SNBox(~synthWin, 20@18)
 			.clipLo_(0)
 			.clipHi_(48)
@@ -492,7 +492,7 @@ Routine({
 			.action_({|v|
 				bendRange=v.value;
 			});
-		SCStaticText(~synthWin, 40@18).string_("Lag: ").align_(\right);
+		StaticText(~synthWin, 40@18).string_("Lag: ").align_(\right);
 		SNBox(~synthWin, 40@18)
 			.clipLo_(0.01)
 			.clipHi_(4)
@@ -506,7 +506,7 @@ Routine({
 			~xynthi.vco3, ~xynthi.in1, ~xynthi.in2, ~xynthi.noise1, 
 			~xynthi.vcf, ~xynthi.mix1, ~xynthi.mix2
 		]; 
-		SCButton(~synthWin, 160@18)
+		Button(~synthWin, 160@18)
 			.states_([["Turn Key Actions On"], ["Turn Key Actions Off"]])
 			.action_({|v|
 				(v.value==0).if({
