@@ -46,7 +46,7 @@ SynthDef(\noise_clip, {|out=0, amp=1|
 	noises=[\white, \pink, \brown, \gray, \clip];
 	self.elementDictionary=Dictionary[
 		\noisetype ->
-		SCPopUpMenu(w, self.elementStyle.popupSize)
+		PopUpMenu(w, self.elementStyle.popupSize)
 			.items_(noises)
 			.action_({|v|
 				self.synthObj.stopSynth;

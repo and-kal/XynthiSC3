@@ -44,7 +44,7 @@ SynthDef(\excess, {|out=0, in=38, mod_in=39, depth=1|
 	rings=[\clip2, \fold2, \wrap2, \excess];
 	self.elementDictionary=Dictionary[
 		\disttype ->
-		SCPopUpMenu(w, self.elementStyle.popupSize)
+		PopUpMenu(w, self.elementStyle.popupSize)
 			.items_(rings)
 			.action_({|v|
 				self.synthObj.stopSynth;

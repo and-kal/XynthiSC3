@@ -83,7 +83,7 @@ SynthDef(\lfo_bdust, {
 	popStates=["Sine", "Saw Up", "Saw Down", "Pulse", "Pulse2", "SH", "Jitter", "Dust", "BDust"];
 	self.elementDictionary=Dictionary[
 		\synth ->
-		SCPopUpMenu(w, self.elementStyle.popupSize)
+		PopUpMenu(w, self.elementStyle.popupSize)
 			.items_(popStates)
 			.action_({|v|
 				var synthArgs;

@@ -212,7 +212,7 @@ SynthDef(\vco_ssync, {|out=0, freq=440, tune=1, fm_in=37, fm=0, amp=1|
 	});
 	self.elementDictionary.putAll(Dictionary[
 		\wave ->
-		SCPopUpMenu(w, 50@18)
+		PopUpMenu(w, 50@18)
 			.items_(waves)
 			.action_({|v|
 				var synthArgs, curval, newspec, newact;

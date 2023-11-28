@@ -48,7 +48,7 @@ SynthDef(\ring_ring4, {|out=0, in=38, ring_in=39, depth=1|
 	rings=[\mul, \ring1, \ring2, \ring3, \ring4];
 	self.elementDictionary=Dictionary[
 		\ringtype ->
-		SCPopUpMenu(w, self.elementStyle.popupSize)
+		PopUpMenu(w, self.elementStyle.popupSize)
 			.items_(rings)
 			.action_({|v|
 				self.synthObj.stopSynth;
