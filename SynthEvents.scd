@@ -28,7 +28,7 @@
 		newSelf=self.copy;
 		newSelf.synthObj=nil;
 		newSelf.synthArgDictionary=self.synthArgDictionary.copy;
-		(clearBusses).if({ 
+		(clearBusses).if({
 			newSelf.busDictionary=nil;
 			newSelf.nodeMap=nil;
 		});
@@ -44,7 +44,8 @@
 	busDictionary: nil,
 	makeBusDictionary: nil,
 	makeNodeMap: {|self|
-		(self.nodeMap.isNil).if({ self.nodeMap=NodeMap.new });
+    // NOTE(sbl): was NodeMap - interface seems to have changed - no map method
+		(self.nodeMap.isNil).if({ self.nodeMap=ProxyNodeMap.new });
 		(self.busDictionary.isNil).if({ self.makeBusDictionary });
 		self.busDictionary.keysValuesDo({|key, value|
 			self.nodeMap.map(key, value);
@@ -61,8 +62,8 @@
 		(self.synthArgDictionary.isNil).if({ self.synthArgDictionary=Dictionary.new });
 		forBy(0, synthArgs.size - 2, 2, {|i|
 			(self.busDictionary.includesKey(synthArgs[i])).if({
-				self.server.sendMsg(\c_set, 
-					self.busDictionary.at(synthArgs[i]), 
+				self.server.sendMsg(\c_set,
+					self.busDictionary.at(synthArgs[i]),
 					synthArgs[i + 1]
 				);
 			}, {
@@ -89,9 +90,9 @@
 					synthArgs, target, addAction, run
 				);
 			});
-			self.synthObj=Synth(self.synthDefName, 
-				synthArgArr, 
-				target.asTarget, 
+			self.synthObj=Synth(self.synthDefName,
+				synthArgArr,
+				target.asTarget,
 				addAction
 			).run(run);
 			self.nodeMap.sendToNode(self.synthObj);
@@ -113,13 +114,13 @@
 			});
 			self.synthObj=Synth.basicNew(self.synthDefName, self.server);
 			msg=msg.add(self.synthObj.newMsg(
-				target.asTarget, 
-				synthArgArr, 
+				target.asTarget,
+				synthArgArr,
 				addAction
 			));
 			msg=msg.add(self.synthObj.runMsg(run));
 			mapArr=Array.new;
-			self.nodeMap.settings.keysValuesDo({|k, v|
+			self.nodeMap.keysValuesDo({|k, v|
 				mapArr=mapArr.add(k);
 				mapArr=mapArr.add(v.value);
 			});
@@ -153,8 +154,8 @@
 			});
 			forBy(0, args.size - 2, 2, {|count|
 				(self.busDictionary.includesKey(args[count])).if({
-					self.server.sendMsg(\c_set, 
-						self.busDictionary.at(args[count]), 
+					self.server.sendMsg(\c_set,
+						self.busDictionary.at(args[count]),
 						args[count + 1]
 					);
 				}, {
@@ -175,8 +176,8 @@
 			});
 			forBy(0, args.size - 2, 2, {|count|
 				(self.busDictionary.includesKey(args[count])).if({
-					self.server.sendMsg(\c_setn, 
-						self.busDictionary.at(args[count]), 
+					self.server.sendMsg(\c_setn,
+						self.busDictionary.at(args[count]),
 						args[count + 1].size,
 						args[count + 1]
 					);
@@ -190,15 +191,15 @@
 		self.synthObj;
 	},
 	getValues: {|self, func|
-		self.busarr.getn(self.busDictionary.size, 
+		self.busarr.getn(self.busDictionary.size,
 			{|busses|
 				func.value([busses, self.synthArgDictionary]);
 			}
 		);
 	},
-	map: {|self ...args| 
+	map: {|self ...args|
 		forBy(0, args.size-2, 2, {|i|
-			self.nodeMap.map(args[i], args[i + 1]); 
+			self.nodeMap.map(args[i], args[i + 1]);
 		});
 		(self.synthObj.notNil).if({
 			self.nodeMap.sendToNode(self.synthObj);
@@ -208,7 +209,7 @@
 	mapMsg: {|self ...args|
 		var return;
 		forBy(0, args.size-2, 2, {|i|
-			self.nodeMap.map(args[i], args[i + 1]); 
+			self.nodeMap.map(args[i], args[i + 1]);
 		});
 		(self.synthObj.notNil).if({
 			return=[14, self.synthObj.nodeID] ++ args;
@@ -285,7 +286,7 @@
 							try { self.elementDictionary.at(key).perform(vkey, vval) };
 						});
 					}, {
-						((self.elementDictionary.at(key).isKindOf(EZSlider)) || 
+						((self.elementDictionary.at(key).isKindOf(EZSlider)) ||
 							(self.elementDictionary.at(key).isKindOf(EZKnob))).if({
 							try { self.elementDictionary.at(key).value_(value) };
 						}, {
@@ -301,16 +302,16 @@
 		outputDictionary=Dictionary.new;
 		self.elementDictionary.keysValuesDo({|key, value|
 			// some special cases.    could be expanded
-			((value.isKindOf(RangeSlider)) || (value.isKindOf(Slider2D)) || 
+			((value.isKindOf(RangeSlider)) || (value.isKindOf(Slider2D)) ||
 				(value.isKindOf(Function))).if({
 				switch (value.class)
 				{ RangeSlider } {
-					outputDictionary.add(key -> 
+					outputDictionary.add(key ->
 						Dictionary[\activeLo_ -> value.lo, \activeHi_ -> value.hi]
 					);
 				}
 				{ Slider2D } {
-					outputDictionary.add(key -> 
+					outputDictionary.add(key ->
 						Dictionary[\activex_ -> value.x, \activey_ -> value.y]
 					);
 				}
@@ -335,7 +336,7 @@
 			forBy(0, args.size-2, 2, {|i|
 				try {
 					self.midiObj.updateValue(
-						self.midiObj.ccDictionary.matchAt(args[i]), 
+						self.midiObj.ccDictionary.matchAt(args[i]),
 						args[i + 1]
 					);
 				}
