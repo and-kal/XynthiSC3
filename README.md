@@ -6,6 +6,8 @@ original version and additional information can be found at [https://mockfuneral
 
 ## Install dependencies
 
+- Move `Extensions` into a SuperCollider runtime directory e.g.
+  `~/Library/Application\ Support/SuperCollider/Extensions` on macos.
 - Quarks.install("cruciallib")
 
 ## Roadmap
