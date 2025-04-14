@@ -1,147 +1,93 @@
 (
-SynthDef(\matrix_router, {|i_in=32, i_out=0|
-	Out.ar(i_out, In.ar(i_in));
+SynthDef(\matrix_router, {|i_in=32, i_out=0, amt=1|
+  var sig = In.ar(i_in) * amt;
+  Out.ar(i_out, sig);
 }).send(s);
 
-SynthDef(\matrix_router_fb, {|i_in=32, i_out=0|
-	Out.ar(i_out, InFeedback.ar(i_in));
+SynthDef(\matrix_router_mod, {|i_in=32, i_out=0, amt=1|
+  var sig = In.kr(i_in) * amt;
+  Out.kr(i_out, sig); 
 }).send(s);
 
 ~audioMatrix = (
-	reproduce: {|self|
-		self.copy;
-	},
-	inputNames: nil,
-	outputNames: nil,
-	inputArr: nil,
-	outputArr: nil,
-	inputNodes: nil,
-	nodeOrder: nil,
-	synthArr: nil,
-	numQuicks: 9,
-	quickPre: Array.newClear(32),
-	makeMatrix: {|self, w|
-		var boxView, boxAct, synthName, prename, inSize, outSize, boxState;
-		inSize=self.inputArr.size;
-		outSize=self.outputArr.size;
-		self.buttonArr=Array.fill2D(outSize, inSize);
-		self.synthArr=Array.fill2D(outSize, inSize);
-		self.boxState=Array.fill2D(outSize, inSize, 0);
-		w.vert({|v|
-			SCStaticText(v, 40@65).string_("");
-			self.outputArr.do({|e, c|
-				SCStaticText(v, 40@12).string_(self.outputNames.at(c)).align_(\right);
-			});
-		}, 40@(18 * outSize));
-		w.vert({|v|
-			v.flow({|x|
-				self.inputNames.do({|e, c|
-					var vertName;
-					vertName='';
-					e.do({|l, c|
-						(c < (e.size - 1)).if({
-							vertName=vertName ++ l ++ "\r\n";
-						}, {
-							vertName=vertName ++ l;
-						});
-					});
-					SCStaticText(x, 10@60).string_(vertName).align_(\center);
-				});
-			}, (14 * inSize + 5)@60);
-			boxView=SCCompositeView(v, (inSize * 14)@(outSize    * 16));
-			boxAct={|l|
-				var v, x, y;
-				x=l[0];
-				y=l[1];
-				v=self.boxGrid.getState(x, y);
-				(v==0).if({
-					 (self.boxState[y][x]==1).if({ self.synthArr[y][x].free; self.boxState[y][x]=0; });
-				}, {
-					(self.boxState[y][x]==0).if({
-						(self.nodeOrder.indexOf(self.outputArr.at(y)) < self.nodeOrder.indexOf(self.inputArr.at(x))).if({
-							synthName=\matrix_router;
-						}, {
-							synthName=\matrix_router_fb;
-						});
-						self.synthArr[y][x]=Synth.before(self.inputNodes[x].value,
-							synthName,
-							[\i_in, self.outputArr.at(y), \i_out, self.inputArr.at(x)]
-						);
-						self.boxState[y][x]=1;
-					});
-				});
-			};
-			self.boxGrid=BoxGrid.new(boxView, 
-				Rect(boxView.bounds.left, boxView.bounds.top, inSize * 14, outSize * 16), 
-				columns: inSize, rows: outSize)
-				.setBackground_(Color.white)
-				.setNodeBorder_(3)
-				.setFillMode_(true)
-				.setTrailDrag_(true)
-				.nodeDownAction_(boxAct)
-				.nodeTrackAction_(boxAct);
-		}, (14 * inSize + 5)@(16 * outSize + 65));
-		w.startRow;
-		ActionButton(w, " S ", {
-			CocoaDialog.savePanel({|path|
-				var arr;
-				arr=self.getValues;
-				arr.writeTextArchive(path);
-			})
-		});
-		ActionButton(w, " L ", {
-			CocoaDialog.getPaths({|path|
-				self.setValues(Object.readTextArchive(path[0]));
-			})
-		});	
-		self.numQuicks.do({|i|
-			SCButton(w, 18@16)
-				.states_([[(i + 1).asString]])
-				.mouseDownAction_({|v, x, y, mod|
-					var state;
-					((mod==131332) || (mod==131330)).if({
-						state=self.getValues;
-						self.quickPre.put(i, state);
-					}, {
-						(self.quickPre.at(i).notNil).if({
-							state=self.quickPre.at(i);
-							self.setValues(state);
-							prename.string_(' ' ++ (i + 1).asString);
-						});
-					});
-				});
-		});
-		prename=SCStaticText(w,18@16).string_('');
-	},
-	getValues: {|self|
-		var outState;
-		outState=self.boxGrid.getNodeStates;
-		outState;
-	},
-	setValues: {|self, arr|
-		var msg, synthName;
-		msg=List.new;
-		arr.do({|e, c|
-			e.do({|e2, c2|
-				(self.boxState[c][c2] != e2).if({
-					(e2==0).if({
-						msg=msg.add(self.synthArr[c][c2].freeMsg);
-					}, {
-						(self.nodeOrder.indexOf(self.outputArr[c]) < self.nodeOrder.indexOf(self.inputArr[c2])).if({
-							synthName=\matrix_router;
-						}, {
-							synthName=\matrix_router_fb;
-						});
-						self.synthArr[c][c2]=Synth.basicNew(synthName);
-						msg=msg.add(self.synthArr[c][c2].addBeforeMsg(self.inputNodes[c2].value,
-							[\i_in, self.outputArr[c], \i_out, self.inputArr[c2]]));
-					});
-				});
-			});
-		});
-		s.listSendBundle(0.02, msg);
-		self.boxState=arr.deepCopy;
-		{ self.boxGrid.setNodeStates_(arr); }.defer;
-	}
-)
+  reproduce: {|self|
+    self.copy;
+  },
+  
+  inputNames: nil,
+  outputNames: nil,
+  inputArr: nil,
+  outputArr: nil,
+  inputNodes: nil,
+  nodeOrder: nil,
+  synthArr: Array2D.new(17,17),
+  modAmt: Array2D.new(17,17),
+  
+  makeMatrix: {|self, view|
+    var gridView = View(view, view.bounds);
+    var grid = GridLayout();
+    var modKnobs = Array2D.new(17,17);
+    
+    // Header row
+    grid.add(StaticText().string_(""), 0, 0);
+    self.inputNames.do {|name, i|
+      grid.add(StaticText().string_(name).align_(\center), 0, i+1); 
+    };
+    
+    // Matrix rows
+    self.outputNames.do {|name, row|
+      grid.add(StaticText().string_(name).align_(\right), row+1, 0);
+      
+      self.inputArr.size.do {|col|
+        var cell = View().layout_(
+          VLayout(
+            Button()
+              .states_([[""],["X", Color.black, Color.gray]])
+              .action_({|but|
+                self.toggleConnection(row, col, but.value);
+              }),
+            Knob()
+              .action_({|knob|
+                self.setModAmount(row, col, knob.value);
+              })
+          )
+        );
+        grid.add(cell, row+1, col+1);
+      };
+    };
+    
+    gridView.layout = grid;
+    gridView;
+  },
+  
+  toggleConnection: {|self, row, col, state|
+    var synthName;
+    
+    if(state == 1, {
+      // Make connection
+      if(self.nodeOrder.indexOf(self.outputArr[row]) < self.nodeOrder.indexOf(self.inputArr[col]), {
+        synthName = \matrix_router;
+      }, {
+        synthName = \matrix_router_mod;
+      });
+      
+      self.synthArr[row,col] = Synth(synthName, [
+        \i_in, self.outputArr[row],
+        \i_out, self.inputArr[col],
+        \amt, self.modAmt[row,col] ? 1
+      ]);
+    }, {
+      // Remove connection
+      self.synthArr[row,col].free;
+      self.synthArr[row,col] = nil;
+    });
+  },
+  
+  setModAmount: {|self, row, col, amt|
+    self.modAmt[row,col] = amt;
+    if(self.synthArr[row,col].notNil, {
+      self.synthArr[row,col].set(\amt, amt);
+    });
+  }
+);
 )

@@ -1,8 +1,10 @@
 # xynthi-update
 
-Project of trying to update Bhob Rainey's Xynthi to SC3.
+Update of Bhob Rainey's Xynthi
 
-original version and additional information can be found at [https://mockfuneral.github.io/2020/12/11/xynthi](mockfuneral.github.io)
+It was originally done in SuperCollider 2 and was macOS-only. The new version will be in SuperCollider 3 and is supposed to run cross-platform.
+
+The original version and additional information can be found at [mockfuneral.github.io](https://mockfuneral.github.io/2020/12/11/xynthi).
 
 ## Roadmap
 
@@ -12,11 +14,11 @@ One task would be this: »[S]ince SC switched to .scd files instead of .rtf, man
 
 ## Prompts
 
-For an initial conversion of some of the .scd files to something SC3-compatible I used the following prompt on Anthropic Claude Snnet 3.5 (new):
+For an initial conversion of some of the .scd files to something SC3-compatible I used the following prompt on Anthropic Claude Sonnet 3.5 (new):
 
-> This is a synthesizer/sound generator built in SuperCollider 2. I want to rewrite it so that it works with SuperCollider 3 (https://docs.supercollider.online/). One of the main issues is that SuperCollider 2 used cocoa as a UI library, while SuberCollider 3 is using Qt. So a lot of the UI stuff in Xynthi_Run.scd for example has to be rewritten for Qt. (Ideally, our SuperCollider program would then also run on Windows and Linux, while the cocoa part made it Mac-exclusive previously.) The good news is, that the sound producing part is extremely straightforward, e.g. the filters (./modules/moogvcf.scd), oscillators (./modules/vco.scd) or reverb (./modules/scverb.scd) are all pretty straightforward SynthDefs and the least amount of code to port. The application comes to life in the routing and interaction of elements (modules), which is largely driven by the UI. So the majority of work is really rewriting the UI part. Though we should also check, if maybe some of the synthdefs or other classes used in the .scd files are outdated. We can ignore the ./presets folder for now.
+> This is a synthesizer/sound generator built in SuperCollider 2. I want to rewrite it so that it works with [SuperCollider 3](https://docs.supercollider.online/). One of the main issues is that SuperCollider 2 used cocoa as a UI library, while SuberCollider 3 is using Qt. So a lot of the UI stuff in `Xynthi_Run.scd` for example has to be rewritten for Qt. (Ideally, our SuperCollider program would then also run on Windows and Linux, while the cocoa part made it Mac-exclusive previously.) The good news is, that the sound producing part is extremely straightforward, e.g. the filters (`./modules/moogvcf.scd`), oscillators (`./modules/vco.scd`) or reverb (`./modules/scverb.scd`) are all pretty straightforward SynthDefs and the least amount of code to port. The application comes to life in the routing and interaction of elements (modules), which is largely driven by the UI. So the majority of work is really rewriting the UI part. Though we should also check, if maybe some of the synthdefs or other classes used in the .scd files are outdated. We can ignore the `./presets` folder for now.
 
-This is the response that was generated:
+In response these steps were generated:
 
 ### Migration Steps
 
